@@ -1,6 +1,9 @@
 # VividFlow
 
-![alt text](https://i.imgur.com/VNRlKVC.png)
+
+![alt text](https://i.imgur.com/7M5yLgh.png)
+
+
 
 ![alt text](https://github.com/jjc224/VividFlow/blob/master/Website/logos.png)
 
