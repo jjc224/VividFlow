@@ -1,5 +1,7 @@
 # VividFlow
 
+![alt text](https://i.imgur.com/VNRlKVC.png)
+
 ![alt text](https://github.com/jjc224/VividFlow/blob/master/Website/logos.png)
 
 ## Introduction
