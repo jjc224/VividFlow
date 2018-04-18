@@ -1,11 +1,11 @@
 # VividFlow
 
-<br />
+<br /><br /><br /><br />
 
 ![alt text](https://i.imgur.com/7M5yLgh.png)
 
 <br />
-<br />
+<br /><br /><br /><br />
 
 ![alt text](https://github.com/jjc224/VividFlow/blob/master/Website/logos.png)
 
