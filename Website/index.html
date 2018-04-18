@@ -1,0 +1,510 @@
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>VividFlow</title>
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+    <!-- <script   src="https://code.jquery.com/jquery-2.2.4.min.js"   integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="   crossorigin="anonymous"></script> -->
+    <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script> -->
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <!-- Custom styles for this template -->
+    <link href="carousel.css" rel="stylesheet">
+
+    <link href='http://fonts.googleapis.com/css?family=Ubuntu:bold' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Vollkorn' rel='stylesheet' type='text/css'>
+
+
+
+    <style type="text/css">
+        html {
+            zoom: 100%;
+        }
+
+        #intro {
+            width: 75%;
+            margin-bottom: 75px;
+        }
+
+        #usage {
+            margin-left: 25%;
+            margin-bottom: 75px;
+            width: 75%;
+        }
+
+        #applications {
+            width: 75%;
+            margin-bottom: 75px;
+        }
+
+        #about {
+            margin-left: 25%;
+            margin-bottom: 75px;
+            width: 75%;
+        }
+
+        #team {
+            width: 75%;
+            margin-bottom: 75px;
+        }
+
+        #pagecontent {
+            margin: 10%;
+            margin-top: 20px;
+        }
+
+        #title {
+            text-decoration: none;
+            color: #FFFFFF;
+            -webkit-mask-image: -webkit-gradient(linear, left top, left bottom, from(rgba(255, 255, 0, 1)), color-stop(50%, rgba(255, 255, 0, 1)), to(rgba(255, 255, 0, 1)));
+            text-shadow: 0 5px 0 #505050;
+            -webkit-transition: all .3s;
+            -moz-transition: all .3s;
+            transition: all .3s;
+            text-shadow: -2px -2px 0 #808080, 2px -2px 0 #808080, -2px 2px 0 #808080, 2px 2px 0 #808080;
+            font-family: 'Ubuntu', Helvetica, Arial, sans-serif;
+            font-size: 90px;
+            line-height: 105px;
+            height: 100%;
+            text-align: center;
+        }
+
+        #titlesmall {
+            font-family: 'Ubuntu', Helvetica, Arial, sans-serif;
+            font-size: 20px;
+            color: rgb(112, 112, 112);
+        }
+
+        .titlefont {
+            font-family: 'Ubuntu', Helvetica, Arial, sans-serif;
+            color: rgb(112, 112, 112);
+        }
+
+        .nav-item:hover {
+            background-image: linear-gradient(to bottom, #aaa 0, #f8f8f8 100%);
+        }
+
+        #logo-cell {
+            padding-top: 0px;
+            padding-bottom: 0px;
+            height: 100%;
+        }
+
+        #logo-div {
+            padding-top: 0px;
+            padding-bottom: 0px;
+            height: 100%;
+            margin-bottom: 0px;
+        }
+
+        .headingsmall {
+            font-family: 'Ubuntu', Helvetica, Arial, sans-serif;
+            font-size: 18px;
+            color: rgb(175, 175, 175);
+            text-align: center;
+        }
+
+        .section {
+            width: 100%;
+            margin: 0;
+            padding-top: 100px;
+            padding-bottom: 150px;
+            padding-left: 10%;
+            padding-right: 10%;
+        }
+
+        .section_bg {
+            background: linear-gradient(#FAFAFA, #FDFDFD, #ECECEC);
+        }
+
+        #title-box {
+            position: absolute;
+            top: 320px;
+            left: 35%;
+            text-align: center;
+            margin: auto;
+        }
+
+        #title-container {
+            padding-top: 150px;
+            padding-bottom: 150px;
+        }
+
+        #title-image {
+            height: 400px;
+        }
+
+        .font-bigger {
+            display: inline-block;
+        }
+
+        .font-bigger:hover {
+
+            font-size: 110%;
+            -o-transition:.5s;
+            -ms-transition:.5s;
+            -moz-transition:.5s;
+            -webkit-transition:.5s;
+            /* ...and now for the proper property */
+            transition:.5s;
+        }
+
+        /*.hideme {
+            opacity: 0;
+        }*/
+
+        .download {
+            width:400px;
+            height:80px;
+            border: 1px solid black;
+            font-size: 30px;
+            padding: 20px;
+            margin: 50px;
+            font-family: 'Ubuntu Light', Helvetica, Arial, sans-serif;
+        }
+
+        .download:hover {
+            background-color: #ddd;
+            -o-transition:.5s;
+            -ms-transition:.5s;
+            -moz-transition:.5s;
+            -webkit-transition:.5s;
+            /* ...and now for the proper property */
+            transition:.5s;
+        }
+    </style>
+
+    <script>
+        $(document).ready(function() {
+
+            /* Every time the window is scrolled ... */
+            $(window).scroll(function() {
+                $('.hideme').each(function(i) {
+                    var bottom_of_object = $(this).offset().top + $(this).outerHeight();
+                    var bottom_of_window = $(window).scrollTop() + $(window).height() - 7900;
+                    // console.log(bottom_of_object, bottom_of_window);
+                    if (bottom_of_window > bottom_of_object) {
+                        // console.log("HOTTTT");
+                        $(this).animate({
+                            'opacity': '1'
+                        }, 1000);
+                    }
+                });
+            });
+
+            $("#title-image").slideDown(1000);
+            $("#title-box").fadeIn(2000);
+            // $("#title-container")
+            //   .css('opacity', 0)
+            //   .slideDown(3000)
+            //   .animate(
+            //     { opacity: 1 },
+            //     { queue: false, duration: 3000 }
+            //   );
+
+            $("#to_features").click( function() {
+                $(document.body).animate({
+                    'scrollTop':   $('#features').offset().top
+                }, 1500);
+            });
+
+            $("#to_about").click( function() {
+                $(document.body).animate({
+                    'scrollTop':   $('#about').offset().top
+                }, 1500);
+            });
+            $("#to_uow").click( function() {
+                $(document.body).animate({
+                    'scrollTop':   $('#uow').offset().top
+                }, 1500);
+            });
+            $("#to_team").click( function() {
+                $(document.body).animate({
+                    'scrollTop':   $('#team').offset().top
+                }, 1500);
+            });
+            $("#to_documentation").click( function() {
+                $(document.body).animate({
+                    'scrollTop':   $('#documentation').offset().top
+                }, 1500);
+            });
+        });
+    </script>
+
+</head>
+
+<body>
+
+    <div style="height:50px; margin: 5px;">
+        <table class="unselectable" border="0" style="width:100%" height="50px">
+            <tr height="50px">
+                <td colspan="1">
+                    <nav class="navbar navbar-default" style="margin-bottom:0px;">
+                        <div style="float:left;width:150px;">
+                            <a href="#" class="navbar-brand" id="titlesmall" onclick="location.replace('/')">VividFlow</a>
+                        </div>
+
+                        <ul class="nav navbar-nav">
+                            <li class="nav-item" id="to_features">
+                                <a class="nav-link" >Features</a>
+                            </li>
+                            <li class="nav-item" id="to_about">
+                                <a class="nav-link" href="#About">About</a>
+                            </li>
+                            <li class="nav-item" id="to_uow">
+                                <a class="nav-link" href="#uow">UOW</a>
+                            </li>
+                            <li class="nav-item" id="to_team">
+                                <a class="nav-link">Team</a>
+                            </li>
+                            <li class="nav-item" id="to_documentation">
+                                <a class="nav-link" >Documentation</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div id="title-container">
+        <img id="title-image" hidden src="title2.png" alt="First slide" style="padding-top:50px; width: 100%;">
+        <div id="title-box" hidden>
+            <h1 id="title">VividFlow</h1>
+        </div>
+    </div>
+
+
+
+    <a name="intro"></a>
+    <!-- <hr class="featurette-divider"> -->
+    <div class="row featurette section section_bg">
+        <div class="col-md-7">
+            <h2 class="featurette-heading">Develop <div class="font-bigger">Faster</div>, Dream <div class="font-bigger">Bigger</div><span class="text-muted"></span></h2><br>
+            <p class="lead">VividFlow simplifies development of computer vision algorithms and speeds up iteration by allowing researchers to snap existing modules together.</p>
+        </div>
+    </div>
+
+
+
+
+    <a name="Features" id="features"></a>
+    <div style="margin-left: 0px; padding-left: 0px;text-align: center; margin-top: 150px; margin-bottom: 150px;">
+        <h2 class="featurette-heading">Simplicity<br><br>
+            <span class="text-muted" style="font-size: 26px;">
+                Intuitive, responsive and simple to use algorithm designer
+            </span></h2><br><br>
+        <div class="hideme">
+            <img src="algo.png" class="hideme" style="align-self: center;" alt="Generic placeholder image">
+        </div>
+    </div>
+
+
+
+    <a name="usage"></a>
+    <div style="margin-left: 0px; padding-left: 0px;text-align: center; margin-top: 150px; margin-bottom: 150px;">
+        <h2 class="featurette-heading">Scheduling<br><br>
+            <span class="text-muted" style="font-size: 26px;">
+                Schedule algorithms to run and spend time developing
+            </span></h2><br><br>
+        <div class="hideme">
+            <img src="time.jpg" class="hideme" style="align-self: center; width:400px" alt="Generic placeholder image">
+        </div>
+    </div>
+
+    <a name="usage"></a>
+    <div style="margin-left: 0px; padding-left: 0px;text-align: center; margin-top: 150px; margin-bottom: 150px;">
+        <h2 class="featurette-heading">Reuseability<br><br>
+            <span class="text-muted" style="font-size: 26px;">
+                Build resuable modules, stop reinventing the wheel
+            </span></h2><br><br>
+        <div class="hideme">
+            <img src="copy.png" class="hideme" style="align-self: center;" alt="Generic placeholder image">
+        </div>
+    </div>
+
+    <a name="Stability"></a>
+    <div style="margin-left: 0px; padding-left: 0px;text-align: center; margin-top: 150px; margin-bottom: 150px;">
+        <h2 class="featurette-heading">Stability<br><br>
+            <span class="text-muted" style="font-size: 26px;">A stable platform built on reliable software</span>
+        </h2><br>
+        <div style="width: 500px;">
+            <!-- <p class="lead">
+                Our system uses current technology that is tried and tested. We believe in reliability and expect nothing less from the tools we use.
+            </p> -->
+        </div>
+        <img src="logos.png" class="hideme" styel="align-self: center;" alt="Generic placeholder image">
+    </div>
+
+
+    <a name="Stability"></a>
+    <div style="margin-left: 0px; padding-left: 0px;text-align: center; margin-top: 150px; margin-bottom: 150px;">
+        <h2 class="featurette-heading">Accessible<br><br>
+            <span class="text-muted" style="font-size: 26px;">Web based application that can be accessed anywhere</span>
+        </h2><br>
+        <div style="width: 500px;">
+            <!-- <p class="lead">
+                Our system uses current technology that is tried and tested. We believe in reliability and expect nothing less from the tools we use.
+            </p> -->
+        </div>
+        <img src="pc.png" class="hideme" style="align-self: center; width:200px;" alt="Generic placeholder image">
+    </div>
+
+    <!-- <a name="applications"></a>
+    <div class="row featurette section section_bg">
+        <div class="col-md-7">
+            <h2 class="featurette-heading">Applications<span class="text-muted"></span></h2><br>
+            <p class="lead">VividFlow is primarily focussed on computer vision research, and as a result has extensive support for video and image formats.</p>
+            <p class="lead">Potential areas of research include:</p>
+            <ul>
+                <li>
+                    <p class="lead">Object Recognition</p>
+                </li>
+                <li>
+                    <p class="lead">Pattern Analysis</p>
+                </li>
+                <li>
+                    <p class="lead">Object tracking</p>
+                </li>
+                <li>
+                    <p class="lead">Feature identification</p>
+                </li>
+                <li>
+                    <p class="lead">Object Modelling</p>
+                </li>
+            </ul>
+            <p class="lead">There are no restrictions preventing VividFlow being used for other areas of research and outside of computer vision.</p>
+        </div>
+        <div class="col-md-5" style="margin-top:80px;">
+            <img class="featurette-image img-fluid center-block img-circle" src="pattern.jpg" width="300px" alt="Generic placeholder image">
+        </div>
+    </div> -->
+
+
+    <a name="About" id="about"></a>
+    <div class="row featurette section section_bg">
+        <div class="col-md-7 col-md-push-3">
+            <h2 class="featurette-heading">About the Project<span class="text-muted" style="font-size: 26px;"></span></h2><br>
+            <p class="lead">VividFlow is a web application allowing researchers to work from any platform in a standard environment. Google Chrome and Mozilla Firefox are the primary target browsers. Behind the scenes, VividFlow runs on Debian and Ubuntu systems. The
+                back end is written in Python, using Flask and Gunicorn. The application is served through nginx and the backing database is MySQL.</p>
+
+                <h2 class="featurette-heading"><span class="text-muted" style="font-size: 26px;">Focus on the problem, not the boilerplate</span></h2><br>
+                <p class="lead">Traditionally when prototyping a new algorithm, you need to write code to open the images, preprocess the image and then finally work on the problem you are trying to solve. With VividFlow you can just snap these steps together, without having
+                    to rewrite the boilerplate code and existing processing steps each time. Modules are written in C++ with the help of our VividFlow library that takes care of interfacing with the system. You can then link the data inputs from other modules
+                    into your new module. This allows you to focus on just the immediate project.</p>
+                <p class="lead">When you update a module to perform better at its task, all your algorithms will benefit from the improvement, reducing the effort of maintaining multiple projects.</p>
+
+                <h2 class="featurette-heading"><span class="text-muted" style="font-size: 26px;">Applications</span></h2><br>
+                <p class="lead">VividFlow is primarily focused on computer vision research, and as a result has extensive support for video and image formats.</p>
+                <p class="lead">Potential areas of research include:</p>
+                <ul>
+                    <li>
+                        <p class="lead">Object Recognition</p>
+                    </li>
+                    <li>
+                        <p class="lead">Pattern Analysis</p>
+                    </li>
+                    <li>
+                        <p class="lead">Object tracking</p>
+                    </li>
+                    <li>
+                        <p class="lead">Feature identification</p>
+                    </li>
+                    <li>
+                        <p class="lead">Object Modelling</p>
+                    </li>
+                </ul>
+                <p class="lead">There are no restrictions preventing VividFlow being used for other areas of research and development outside of computer vision.</p>
+
+                <h2 class="featurette-heading"><span class="text-muted" style="font-size: 26px;">Project Background</span></h2><br>
+                <p class="lead">Our client expressed to our team the difficulties involved in prototyping computer vision algorithms. A previous system was demonstrated that helped alleviate similar problems for image processing. A similar system with a focus on computer vision was requested by our client. By reviewing the problems and the demonstrated system our team was able to design a system that works well for computer vision research. By allowing modules to receive multiple inputs and output multiple pieces of data the system allows for complex algorithms to be quickly connected up.</p>
+        </div>
+
+        <!-- <div class="col-md-5 col-md-pull-7" style="margin-top:50px;">
+            <img class="featurette-image img-fluid center-block" src="mysql.png" width="300px" alt="Generic placeholder image">
+        </div> -->
+    </div>
+
+
+        <!-- <a name="usage"></a>
+        <div class="row featurette section section_bg">
+            <!-- <div class="col-md-7 col-md-push-5">
+                <h2 class="featurette-heading">Usage<br><br><span class="text-muted" style="font-size: 26px;">Focus on the problem, not the boilerplate</span></h2><br>
+                <p class="lead">Traditionally when prototyping a new algorithm, you need to write code to open the images, preprocess the image and then finally work on the problem you are trying to solve. With VividFlow you can just snap these steps together, without having
+                    to rewrite the boilerplate code and existing processing steps each time. Modules are written in c with the help of our VividFlow library that takes care of interfacing with the system. You can then link the data inputs from other modules
+                    into your new module. This allows you to focus on just the immediate project.</p>
+                <p class="lead">When you update a module to perform better at its task, all your algorithms will benefit from the improvement, reducing the effort of maintaining multiple projects.</p>
+            <!-- </div>
+        </div> -->
+
+        <a name="uow" id="uow"></a>
+        <div class="row featurette section ">
+            <div class="col-md-5" style="margin-top:80px;">
+                <img class="featurette-image img-fluid center-block" src="uow2.png" width="400px" alt="Generic placeholder image">
+            </div>
+            <div class="col-md-7">
+                <h2 class="featurette-heading">Developed for the University of Wollongong
+                    <span class="text-muted"></span>
+                </h2><br>
+                <p class="lead">
+                    Dr Igor Kharitonenko from the School of Computing &amp; Information Technology requested the development of VividFlow. Over the Autumn and Spring session of 2016 our team has worked hard to provide an effective solution.
+                </p>
+            </div>
+        </div>
+
+
+    <a name="team" id="team"></a>
+    <div class="row featurette section section_bg">
+        <div class="col-md-7">
+            <h2 class="featurette-heading">Team<span class="text-muted"></span></h2><br>
+            <p class="lead">VividFlow is the final year project for three University of Wollongong students. The team members are each studying a Bachelor of Computer Science.</p>
+            <ul>
+                <li>
+                    <p class="lead">Joshua Coleman</p>
+                </li>
+                <li>
+                    <p class="lead">Philip Edwards</p>
+                </li>
+                <li>
+                    <p class="lead">Thomas Nixon</p>
+                </li>
+            </ul>
+        </div>
+        <div class="col-md-5" style="margin-top:80px;">
+            <img class="featurette-image img-fluid center-block img-circle" src="team2.jpg" width="300px" alt="Generic placeholder image">
+        </div>
+    </div>
+
+
+    <a name="Documentation" id="documentation"></a>
+    <div class="row featurette section ">
+        <div class="col-md-7">
+            <h2 class="featurette-heading">Documentation
+                <span class="text-muted"></span>
+            </h2><br>
+            <p class="lead">
+                <div class="download" onclick="window.location='UserManual.pdf'"><span class="glyphicon glyphicon-file" aria-hidden="true"></span>&nbsp; User Manual</div>
+                <div class="download" onclick="window.location='TechnicalReport.pdf'"><span class="glyphicon glyphicon-file" aria-hidden="true"></span>&nbsp; Technical Report</div>
+                <div class="download" onclick="window.location='GroupDiaries.Zip'"><span class="glyphicon glyphicon-file" aria-hidden="true"></span>&nbsp; Group Diary</div>
+            </p>
+        </div>
+
+    </div>
+
+
+
+
+
+</body>
+
+</html>
