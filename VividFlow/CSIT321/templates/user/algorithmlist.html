@@ -1,0 +1,73 @@
+{% extends "_base.html" %}
+
+{% block css %}
+<style>
+ li:hover {
+     background-color: lightblue;
+ }
+</style>
+{% endblock %}
+
+{% block js %}
+<script>
+    function navigate_to_algo(algo_link) {
+        window.location = algo_link;
+    }
+
+    function delete_algo(algo_id)
+    {
+        console.log("Delete: " + algo_id);
+        $.ajax({
+            context: this,
+            url: "/algorithm/" + algo_id + "/delete",
+            type: "GET",
+            success: function(data) {
+                if (data == "Success!") {
+                    console.log("Deleted");
+                    window.location = "/algorithm/list";
+                } else {
+                    alert("Failed to delete algorithm");
+                }
+
+            }
+        });
+    }
+</script>
+{% endblock %}
+
+
+{% block content %}
+    <h1>Algorithm List</h1>
+    <hr>
+    <button class="btn btn-primary" onclick="window.location = '{{ url_for('create_algorithm') }}'">Create Algorithm</button>
+    <br><br>
+    <ul class="list-group">
+        {% for algorithm in ALGORITHM_DICT %}
+            <li class="list-group-item list-group-item-default" style="height:43px">
+                <div style="width:90%; float:left;" onclick="navigate_to_algo('{{ url_for('view_algorithm', algorithm_id=algorithm['id']) }}')">
+                    <h4 class="list-group-item-heading">{{ algorithm.name }}</h4>
+                </div>
+                <div style="float:right; font-size:20px;">
+                    <div style="padding-left:10px" class="pull-right"><span class="glyphicon glyphicon-remove pull-right" onclick="delete_algo({{ algorithm.id }})" aria-hidden="true" data-toggle="tooltip" data-placement="right" title="Remove"></span></div>
+
+                    <span class="glyphicon glyphicon-pencil pull-right" aria-hidden="true"></span>
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <!-- {% for algorithm in ALGORITHM_DICT %}
+    <h2>{{ algorithm.name }}</h2>
+    <a href="{{ url_for('view_algorithm', algorithm_id=algorithm['id']) }}">View algorithm</a>
+
+    <ul>
+        {% for key, value in algorithm.items() %}
+        <li>{{key}}: {{value}}</li>
+        {% endfor %}
+    </ul>
+    <hr>
+    {% endfor %} -->
+    <script>
+        $('[data-toggle="tooltip"]').tooltip()
+    </script>
+{% endblock %}

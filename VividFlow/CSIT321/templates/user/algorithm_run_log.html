@@ -1,0 +1,115 @@
+{% extends "_base.html" %}
+
+{% block header_items %}
+<li class="nav-item">
+  <a href="{{ url_for('view_algorithm', algorithm_id=ALGORITHM_ID) }}">Back To Designer</a>
+</li>
+{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/r/bs-3.3.5/jq-2.1.4,dt-1.10.8/datatables.min.css"/>
+<style>
+    .trSelector {
+        cursor: pointer;
+    }
+</style>
+
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript" src="https://cdn.datatables.net/r/bs-3.3.5/jqc-1.11.3,dt-1.10.8/datatables.min.js"></script>
+<script type="text/javascript">
+
+    var g_data = {{ "{" }}
+    {% for run in HISTORY_DICT %}
+        '{{ run._ScheduledTaskID }}':
+        [{% for file in run._OutputFiles %}
+                {{ "{" }}'path':'{{ file.OutputPath | replace('\\', '\\\\') }}',
+                'name':'{{ file.OutputName }}'{{ "}" }},
+        {% endfor %}],
+    {% endfor %}{{ "}" }};
+
+    $(document).ready(function() {
+        $('#outputtable').DataTable();
+        $('#outputtable')
+		.removeClass( 'display' )
+		.addClass('table table-striped table-bordered');
+    } );
+
+    // Output links of files in modal
+    function show_job(id) {
+        console.log(g_data[id]);
+        $('#modal_output').modal('show');
+        html = "";
+        for (var i = 0; i < g_data[id].length; i++) {
+            console.log(g_data[id][i].path);
+            g_data[id][i].path = g_data[id][i].path.replace('\\', "A");
+            html += "Name: <a href='/" + g_data[id][i].path + "'>" + g_data[id][i].name + "</a><br>";
+        }
+        $("#output_files").html(html);
+    }
+
+</script>
+{% endblock %}
+
+{% block content %}
+    <h1>Algorithm Output</h1>
+    <hr>
+    <table id="outputtable" class="display" cellspacing="0" width="100%">
+        <thead><tr><th>State</th><th>Start</th><th>Finish</th><th>Return Code</th></tr></thead>
+        <tbody>
+        {% for run in HISTORY_DICT %}
+            {% if run._TaskStatus == "Completed" %}
+                <tr class="success trSelector" onclick="show_job({{ run._ScheduledTaskID }})">
+            {% elif run._TaskStatus == "InProgress" %}
+                <tr class="warning">
+            {% elif run._TaskStatus == "Pending" %}
+                <tr class="warning">
+            {% else %}
+                <tr>
+            {% endif %}
+                <td>{{ run._TaskStatus }}</td>
+                <td>{{ run._TimeStarted }}</td>
+                <td>{{ run._TimeCompleted }}</td>
+                <td>{{ run._ReturnCode }}</td>
+            </tr>
+            <!-- <h2>{{ run._ScheduledTaskID }}</h2>
+            <ul>
+                <li>Status: {{ run._TaskStatus }}</li>
+                <li>Time Scheduled: {{ run._TimeScheduled }}</li>
+                <li>Time Started: {{ run._TimeStarted }}</li>
+                <li>Time Completed: {{ run._TimeCompleted }}</li>
+                <li>Completion Code: {{ run._ReturnCode }}</li>
+                <li>Output Files:
+                    <ul>
+                        {% for file in run._OutputFiles %}
+                            <li>
+                                <a href='/{{ file.OutputPath }}'>Name: {{ file.OutputName }}</a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+            </ul>
+            <hr> -->
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Show a output -->
+    <div class="modal fade" id="modal_output" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="context_menu_reset()"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Ouput Files</h4>
+                </div>
+                <div class="modal-body">
+                    <div id="output_files">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" >Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

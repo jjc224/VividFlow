@@ -1,0 +1,341 @@
+{% extends "_base.html" %}
+
+{% block js %}
+    <!-- Vividflow -->
+    <script src="/static/js/Constants.js"></script>
+    <script src="/static/js/SerializableObject.js"></script>
+    <script src="/static/js/Algorithm.js"></script>
+    <script src="/static/js/SocketForm.js"></script>
+    <script src="/static/js/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+    <script>
+    var g_module_id = {{ MODULE_ID }};
+    var g_module = null;
+    var g_module_has_been_modified = false;
+    var g_input_socket_form = new SocketForm();
+    var g_output_socket_form = new SocketForm();
+    var g_editor = null;
+
+    function mark_module_as_modified(modified_module) {
+        g_module_has_been_modified = true;
+        result = g_module.mark_as_modified();
+        console.log("Module marked as modified. Result: " + result);
+    }
+
+    function mark_module_as_unmodified(modified_module) {
+        if(modified_module == null) {
+            return;
+        }
+        if(modified_module.get_module_version_id() != null) {
+            g_module_has_been_modified = false;
+            return;
+        }
+        else {
+            console.warn("Module has no moduleversionid, cannot mark as unmodified");
+        }
+    }
+
+    function module_ajax_retrieve_request_complete(module_json) {
+
+        var jsonParsed = JSON.parse(module_json);
+        g_module = SerialObjectTypes.build_object_from_json(jsonParsed);
+        mark_module_as_unmodified(g_module);
+        console.log("Module retrieved!");
+        console.log(g_module);
+        update_module_display(g_module);
+
+        g_input_socket_form.set_container($("#input_socket_form"));
+        g_input_socket_form.set_sockets(g_module._InputSockets);
+        g_input_socket_form.generate_form();
+
+        g_output_socket_form.set_container($("#output_socket_form"));
+        g_output_socket_form.set_sockets(g_module._OutputSockets);
+        g_output_socket_form.generate_form();
+
+    }
+
+    function update_module_display(in_module) {
+        $("#mod_name").val(in_module.get_display_name());
+        $("#mod_version").val(in_module.get_version());
+        $("#mod_state").val(in_module.get_state());
+        $("#mod_version_id").val(in_module.get_module_version_id());
+        $("#mod_id").val(in_module.get_id());
+        $("#mod_user_id").val(in_module.get_user_id());
+        hide_ajax_loader();
+    }
+
+    function update_module_metadata() {
+        g_module.set_name($("#mod_name").val());
+    }
+
+    function module_ajax_save_request_complete() {
+        retrieve_module(g_module_id);
+    }
+
+    function update_socket_form_data() {
+        g_input_socket_form.update_socket_data(g_input_socket_form.extract_data());
+        g_output_socket_form.update_socket_data(g_output_socket_form.extract_data());
+    }
+
+    function write_socket_code() {
+        update_socket_form_data();
+        g_module_code = g_editor.getValue();
+
+	var get_formatted_socket_data = function(socket_array) {
+		var data = "";
+
+		$.each(socket_array, function(k, socket) {
+			data += "//\t" + socket._ArgumentNumber + ". " + socket._Name + " is of type " + socket._DataType + ".\n";
+		});
+
+		return data;
+	};
+
+	var socket_comments = "// Input sockets:\n"  + get_formatted_socket_data(g_module._InputSockets)  + "\n";
+	socket_comments    += "// Output sockets:\n" + get_formatted_socket_data(g_module._OutputSockets) + "\n";
+
+	var get_code_for_input_socket = function(socket) {
+		var code = "";
+
+		switch(socket._DataType) {
+			case "String":
+				code += "char *" + socket._Name + " = " + "readString(" + socket._ArgumentNumber + ");";
+				break;
+
+			case "Integer":
+				code += "int " + socket._Name + " = " + "readInteger(" + socket._ArgumentNumber + ");";
+				break;
+
+			case "Float": 
+				code += "double " + socket._Name + " = " + "readFloat(" + socket._ArgumentNumber + ");";
+				break;
+
+			default:
+				code += "struct GenericData *" + socket._Name + " = " + "readGeneric(" + socket._ArgumentNumber + ");";
+		}
+
+		return code;
+	}
+
+	var get_code_for_output_socket = function(socket) {
+		var code = "";
+		var comment = "/* Output data here. */";
+
+		switch(socket._DataType) {
+			case "String":
+				code += "writeString(" + socket._ArgumentNumber + ", " + comment + ");";
+				break;
+
+			case "Integer":
+				code += "writeInteger(" + socket._ArgumentNumber + ", " + comment + ");";
+				break;
+
+			case "Float": 
+				code += "writeFloat(" + socket._ArgumentNumber + ", " + comment + ");";
+				break;
+
+			default:
+				code += "writeGeneric(" + socket._ArgumentNumber + ", " + comment + ");";
+		}
+
+		return code;
+	}
+
+	var socket_code = "\t// Input sockets:\n";
+
+	$.each(g_module._InputSockets, function(k, socket) {
+		socket_code += "\t" + get_code_for_input_socket(socket) + "\n";
+	});
+
+	socket_code += "\n";
+	socket_code += "\t// Output sockets:\n";
+
+	$.each(g_module._OutputSockets, function(k, socket) {
+		socket_code += "\t" + get_code_for_output_socket(socket) + "\n";
+	});
+
+	socket_code = socket_code.slice(0, -1);    // Pop last newline.
+
+	g_module_code = g_module_code.replace(/.*generated here.*/g, socket_code);
+	g_module_code = socket_comments + g_module_code
+
+	g_editor.setValue(g_module_code);
+    }
+
+    function publish_module() {
+        if(g_module.get_state() != ModuleStates.InDevelopment) {
+            console.warn("Cannot publish a module that is not currently in state InDevelopment");
+            return;
+        }
+        mark_module_as_modified(g_module);
+        g_module.publish();
+        save_module();
+    }
+
+    function save_module() {
+        if(g_module == null) {
+            console.warn("Module not defined. not initialised yet");
+            return;
+        }
+        if(g_module_has_been_modified == false) {
+            console.warn("Module not modified. no need to save");
+            display_info_alert("No changes to save");
+            return;
+        }
+
+        show_ajax_loader();
+
+        update_socket_form_data();
+        update_module_metadata();
+
+        var string_module = g_module.serialize_json();
+
+        $.ajax({
+            url: "/module/" + g_module_id + "/json",
+            method: "POST",
+            data: { module : string_module },
+            success: function(data) {
+                console.log("Algorithm saved");
+                module_ajax_save_request_complete();
+                upload_code(g_editor.getValue());
+            }
+        });
+    }
+
+    function retrieve_module(module_id) {
+        show_ajax_loader();
+        $.ajax({
+            url: "/module/" + module_id + "/json",
+            method: "GET",
+            success: module_ajax_retrieve_request_complete
+        });
+    }
+
+    function retrieve_code() {
+        show_ajax_loader();
+        return $.ajax({
+            url: "/module/" + g_module_id + "/code",
+            method: "GET",
+            success: module_code_retrieved
+        });
+    }
+
+    function module_code_retrieved(module_code) {
+        g_editor.setValue(module_code);
+    }
+
+    function upload_code(module_code) {
+        var json = JSON.stringify(module_code);
+        $.ajax({
+            url: "/module/" + g_module_id + "/code",
+            method: "POST",
+            data: {module_code : json},
+            success: function(data) {
+                hide_ajax_loader();
+                display_info_alert("Module saved!");
+            },
+            error: function(data) {
+                hide_ajax_loader();
+                display_error_alert("Module failed to save!");
+            }
+        });
+    }
+
+    function setup_modified_input_listener() {
+        $(document).on('change', 'select', mark_module_as_modified);
+        $(document).on('input', 'input', mark_module_as_modified);
+        $(document).on('input', 'textarea', mark_module_as_modified);
+    }
+
+    $(document).ready(function(){
+        g_editor = ace.edit("editor");;
+        g_editor.setTheme("ace/theme/cloud");
+        g_editor.getSession().setMode("ace/mode/c_cpp");
+        setup_ajax_loader();
+        retrieve_module(g_module_id);
+        retrieve_code();
+        setup_modified_input_listener();
+
+        g_editor.getSession().on('change', function(e) {
+            g_module_has_been_modified = true;
+        });
+    });
+    </script>
+{% endblock %}
+
+{% block css %}
+<style type="text/css" media="screen">
+    #editor {
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 300px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+    .sockets_table {
+        border-collapse:collapse;
+        background-color: #eee;
+        border-radius: 5px;
+    }
+    .sockets_table td {
+        padding: 10px;
+        padding-left: 10px;
+        padding-right: 10px;
+        padding-top: 5px;
+    }
+
+    .sockets_table th {
+        text-align: center;
+        padding-left: 10px;
+        padding-right: 10px;
+        padding-top: 5px;
+        padding-bottom: 5px;
+    }
+
+</style>
+{% endblock %}
+
+{% block header_items %}
+<li class="nav-item">
+  <a class="nav-link" href="{{ VIVIDFLOW_LIB_PATH }}">Download header</a>
+</li>
+{% endblock %}
+
+{% block content %}
+    <h1>Module Designer</h1>
+    <hr>
+    <form class="form-group">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <label>Module Name:</label> <input type="text" class="form-control" id="mod_name" name="mod_name" maxlength='23' /><br>
+                <!-- <label>Module Version:</label> <input type="text" class="form-control" id="mod_version" name="mod_version" disabled="True"/>
+                <label>Module State:</label> <input type="text" class="form-control" id="mod_state" name="mod_state" disabled="True" />
+                <label>Module Version Id:</label> <input type="text" class="form-control" id="mod_version_id" name="mod_version_id" disabled="True" />
+                <label>Module Id:</label> <input type="text" class="form-control" id="mod_id" name="mod_id" disabled="True" />
+                <label>Module User Id:</label> <input type="text" class="form-control" id="mod_user_id" name="mod_user_id" disabled="True" /> -->
+                <label>Module Code:</label> <div id="editor"></div><br><br>
+                <!-- <div class="panel panel-default">
+                    <div class="panel-heading">Sockets</div>
+                    <div class="panel-body"> -->
+                        <label>Input Sockets:</label>
+                        <div id="input_socket_form"></div>
+                        <br><br>
+                        <!-- <hr> -->
+                        <label>Output Sockets:</label>
+			<div id="output_socket_form"></div><br><br><br>
+                    <!-- </div>
+                </div> -->
+		<button id="generate_socket_code" type="button" class="btn btn-default" href="#" onclick="write_socket_code()">Generate Code</button>
+            </div>
+        </div>
+
+    </form>
+
+
+    <button id="publish_module_link" class="btn btn-default" href="#" onclick="publish_module();">Publish Module</button><br><br>
+    <button id="save_module_link" class="btn btn-success" href="#" onclick="save_module();">Save Module</button>
+    <br><br>
+{% endblock %}

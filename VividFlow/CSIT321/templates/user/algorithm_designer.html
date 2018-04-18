@@ -1,0 +1,229 @@
+{% extends "_base.html" %}
+
+{% block js %}
+
+    <!-- Latest compiled and minified JavaScript -->
+
+    <!-- Vividflow -->
+    <script src="/static/js/Constants.js"></script>
+    <script src="/static/js/SerializableObject.js"></script>
+    <script src="/static/js/Algorithm.js"></script>
+    <script src="/static/js/Draw.js"></script>
+    <script src="/static/js/Control.js"></script>
+    <script src="/static/js/ModuleSelector.js"></script>
+    <script src="/static/js/ResourceForm.js" charset="utf-8"></script>
+    <script>
+    var g_algorithm_id = {{ ALGORITHM_ID }};
+    var g_urls = {};
+    g_urls.run_algorithm_url = "{{ url_for('schedule_algorithm_run', algorithm_id=ALGORITHM_ID) }}";
+    g_urls.algorithm_json_url = "{{ url_for('algorithm_json_request', algorithm_id=ALGORITHM_ID) }}";
+
+    $(document).ready(function(){
+        show_ajax_loader();
+        resize_canvas();
+        init_algorithm_canvas();
+        retrieve_algorithm(g_algorithm_id);
+        init_module_selector();
+        g_resource_form = new ResourceForm($("#resources"));
+        populate_output_type();
+    });
+    </script>
+{% endblock %}
+
+
+{% block css %}
+
+    <link rel="stylesheet" href="/static/css/algorithm_designer.css">
+    <link rel="stylesheet" href="/static/css/resource.css">
+    <style>
+    .container, .site-content {
+        width:100%;
+        height:95%;
+    }
+
+    #algo_name {
+        width: 100%;
+        padding: 10px;
+        margin: 0;
+        text-align: center;
+        border: 1px solid white;
+        border-radius: 5px;
+    }
+
+    #algo_name:hover {
+        border: 1px solid lightgrey;
+    }
+
+    </style>
+{% endblock %}
+
+{% block header_items %}
+<li class="nav-item">
+  <a class="nav-link" href="#" onclick="save_algorithm();">Save</a>
+</li>
+<li class="nav-item">
+  <a class="nav-link" href="#" onclick="run_algorithm()">Run</a>
+</li>
+<li class="nav-item">
+  <a class="nav-link" href="#" onclick="location.replace('{{ url_for('view_algorithm_history', algorithm_id=ALGORITHM_ID) }} ')">Output</a>
+</li>
+{% endblock %}
+
+{% block content %}
+    <div style="height:100%;">
+
+        <div style="height:100%;">
+            <table class="unselectable" border="0" style="width:100%;" height="100%" >
+                <tr>
+                    <td width="300px" style="vertical-align: top;">
+                        <div style="text-align: center; margin-top: 10px"><input class="headingsmall" id="algo_name" /></div>
+                        <div><h3 class="headingsmall" style="margin-top:5px;">Modules</h3></div>
+                        <div id="node_selector"></div>
+                    </td>
+                    <td id="canvas_td"><canvas id="myCanvas"></canvas></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <!-- Select Resource -->
+    <div class="modal fade" id="modal_resource" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="context_menu_reset()"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Select Resource</h4>
+                </div>
+                <div class="modal-body">
+                    <div id="resources"></div>
+                    <div style="clear: left; padding:20px;"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" onclick="context_menu_reset()">Close</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="add_resource()" id="resource_button">Insert</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- New OutputNode -->
+    <div class="modal fade" id="modal_output" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="context_menu_reset()"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Create Output Node</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-gorup">
+                        <label>Output Node Name: </label>
+                        <input class="form-control" type="text" name="output_name" id="output_name" maxlength="23"></input>
+                        <br>
+                        <label style="float:left">Output Type: </label>
+                        <select class="socket_types form-control" id="output_type"></select>
+                        <br>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" onclick="context_menu_reset()">Close</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="add_output()" id="output_button">Create</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit OutputNode -->
+    <div class="modal fade" id="modal_output_edit" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="context_menu_reset()"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Edit Output Node</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-gorup">
+                        <label>Output Node Name: </label>
+                        <input class="form-control" type="text" name="output_name" id="edit_output_name" maxlength="23"></input>
+                        <br>
+                        <label style="float:left">Output Type: </label>
+                        <select class="socket_types form-control" id="edit_output_type"></select>
+                        <br>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" onclick="context_menu_reset()">Close</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="update_output()" id="output_button">Update</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- New ValueNode -->
+    <div class="modal fade" id="modal_value" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="context_menu_reset()"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Create Value Node</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-gorup">
+                        <label>Value Node Name: </label>
+                        <input class="form-control" type="text" name="value_name" id="value_name" maxlength="23"></input>
+                        <br>
+                        <label>Value: </label>
+                        <input class="form-control" type="text" name="value_value" id="value_value"></input>
+                        <br>
+                        <label style="float:left">Output Type: </label>
+                        <select class="socket_types form-control" id="value_type"></select>
+                        <br>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" onclick="context_menu_reset()">Close</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="add_value()" id="value_button">Create</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit ValueNode -->
+    <div class="modal fade" id="modal_value_edit" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="context_menu_reset()"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Edit Value Node</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-gorup">
+                        <label>Value Node Name: </label>
+                        <input class="form-control" type="text" name="value_name" id="edit_value_name" maxlength="23"></input>
+                        <br>
+                        <label>Value: </label>
+                        <input class="form-control" type="text" name="value_value" id="edit_value_value"></input>
+                        <br>
+                        <label style="float:left">Output Type: </label>
+                        <select class="socket_types form-control" id="edit_value_type"></select>
+                        <br>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" onclick="context_menu_reset()">Close</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="update_value()" id="value_button">Update</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- This loads the images for the resource, value and output nodes. -->
+    <img id="floppy" src="/static/images/floppy.png" hidden>
+    <img id="picture" src="/static/images/picture.png" hidden>
+    <img id="hdd" src="/static/images/hdd.png" hidden>
+    <img id="floppy-selected" src="/static/images/floppy-selected.png" hidden>
+    <img id="picture-selected" src="/static/images/picture-selected.png" hidden>
+    <img id="hdd-selected" src="/static/images/hdd-selected.png" hidden>
+    <!-- <span class="glyphicon glyphicon-hdd" aria-hidden="true" style="background-color: lightgreen; font-size: 30px; padding: 10px;"></span>
+    <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true" style="background-color: lightgreen; font-size: 30px; padding: 10px;"></span>
+    <span class="glyphicon glyphicon-picture" aria-hidden="true" style="background-color: lightgreen; font-size: 30px; padding: 10px;"></span> -->
+{% endblock %}

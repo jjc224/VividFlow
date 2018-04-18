@@ -1,0 +1,26 @@
+# Example run:
+# --------------------------------------------------------------------
+# $ make -f MakefileVFIMG
+# gcc -c testGenericData.c -o testGenericData.o
+# gcc testGenericData.o -o testGenericData
+#
+# $ make -f MakefileVFIMG run IN_VFIMG="test.vfimg" OUT_VFIMG="test_out.vfimg" 
+# ./testGenericData -i1 test.vfimg -o1 test_out.vfimg
+# --------------------------------------------------------------------
+
+PROGRAM_NAME = testGenericData
+
+default: $(PROGRAM_NAME)
+
+$(PROGRAM_NAME).o: $(PROGRAM_NAME).c module.h
+	    gcc -c $(PROGRAM_NAME).c -o $(PROGRAM_NAME).o
+
+$(PROGRAM_NAME): $(PROGRAM_NAME).o
+	    gcc $(PROGRAM_NAME).o -o $(PROGRAM_NAME)
+
+clean:
+	-rm -f $(PROGRAM_NAME).o
+	-rm -f $(PROGRAM_NAME)
+
+run: $(PROGRAM_NAME)
+	./$(PROGRAM_NAME) -i1 $(IN_VFIMG) -o1 $(OUT_VFIMG)

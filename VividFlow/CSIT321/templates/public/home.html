@@ -1,0 +1,122 @@
+{% extends "_base.html" %}
+
+{% block js %}
+<script>
+    function check_failed_login() {
+        //http://stackoverflow.com/a/979996
+        var params = {};
+
+        if (location.search) {
+        var parts = location.search.substring(1).split('&');
+
+        for (var i = 0; i < parts.length; i++) {
+            var nv = parts[i].split('=');
+            if (!nv[0]) continue;
+            params[nv[0]] = nv[1] || true;
+        }
+        }
+
+        // Now you can get the parameters you want like so:
+        var failed = params.failed;
+        if(failed == "true") {
+            display_error_alert("Failed to login");
+        }
+    }
+     $(document).ready(function(){
+         check_failed_login();
+     });
+
+    function create_user() {
+        var username = $("#username").val();
+        var password = $("#password").val();
+        console.log("username: " + username);
+        console.log("password: " + password);
+        $.ajax({
+            context: this,
+            url: "/user/create",
+            type: "POST",
+            data: {username : username, password : password},
+            success: function(data) {
+                if (data == "success") {
+                    console.log("Account Created");
+                    $("form").submit();
+                } else {
+                    alert("Could not create new account!");
+                }
+            }
+        });
+    }
+</script>
+{% endblock %}
+
+{% block css %}
+<style>
+    html {
+        background: url(/static/images/bg.jpg) no-repeat center center fixed;
+        -webkit-background-size: cover;
+        -moz-background-size: cover;
+        -o-background-size: cover;
+        background-size: cover;
+    }
+
+    .transparent_quarter {
+        opacity: 0.80;
+        filter: alpha(opacity=75); /* For IE8 and earlier */
+        transition: opacity 2s;
+    }
+
+    .transparent_quarter:hover {
+        opacity: 1;
+        filter: alpha(opacity=75); /* For IE8 and earlier */
+    }
+
+    .element_center {
+      position: relative;
+      top: 50%;
+
+    }
+
+    body {
+        background-color: transparent;
+    }
+</style>
+{% endblock %}
+
+{% block header %}
+{% endblock %}
+
+{% block content %}
+
+<div class="element_center">
+<div class="row" style="margin-top:130px">
+  <div class="col-md-4"></div>
+  <div class="col-md-4"></div>
+  <div class="col-md-4 ">
+      <div class="panel panel-default transparent_quarter" style="background-color: #eee">
+            <div class="panel-body">
+                <div style="float: absolute">
+                    <form class="form-signin" method="post" action="/user/login">
+                        <h2 class="form-signin-heading">Please sign in</h2>
+                        <label for="inputEmail" class="sr-only">Username</label>
+                        <input name="username" id="username" class="form-control" data-fv-notempty="true" placeholder="Username" required autofocus>
+                        <label for="inputPassword" class="sr-only">Password</label>
+                        <input name="password" type="password" id="password" class="form-control" data-fv-notempty="true" placeholder="Password" required>
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" value="remember-me"> Remember me
+                            </label>
+                        </div>
+                        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+                    </form>
+                    <button class="btn btn-lg btn-primary btn-block" type="submit" style="margin-top:10px" onclick="create_user()">Create Account</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="jumbotron transparent_quarter" style="margin-top: 150px;">
+    <h1 class="titlefont">VividFlow</h1>
+    <p class="pull-right">Dream <b>Bigger</b> - Develop <b>Faster</b></p>
+    <br>
+</div>
+{% endblock %}

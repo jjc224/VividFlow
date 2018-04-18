@@ -1,0 +1,12 @@
+CONFIG = {
+    'mode': 'wsgi',
+    'working_dir': '/var/www/vividflow',
+    'python': '/usr/bin/python',
+    'args': (
+        '--bind=127.0.0.1:8000',
+        '--workers=4',
+        '--timeout=300',
+        '-k=gevent',
+        'CSIT321:app',
+    ),
+}

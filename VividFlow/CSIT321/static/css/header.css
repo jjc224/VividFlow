@@ -1,0 +1,55 @@
+#title {
+    text-decoration: none;
+    color: #FFFFFF;
+
+
+    -webkit-mask-image: -webkit-gradient(linear, left top, left bottom, from(rgba(255,255,0,1)), color-stop(50%, rgba(255,255,0,1)), to(rgba(255,255,0,1)));
+    text-shadow: 0 5px 0 #505050;
+    -webkit-transition: all .3s;
+    -moz-transition: all .3s;
+    transition: all .3s;
+    text-shadow:-2px -2px 0 #808080,   2px -2px 0 #808080,-2px 2px 0 #808080, 2px 2px 0 #808080;
+
+
+    font-family: 'Ubuntu', Helvetica, Arial, sans-serif;
+    font-size: 70px;
+    line-height: 65px;
+
+    //height: 80px;
+    height: 100%;
+}
+
+#titlesmall {
+    font-family: 'Ubuntu', Helvetica, Arial, sans-serif;
+    font-size: 20px;
+    color: rgb(112,112,112);
+}
+
+.titlefont {
+    font-family: 'Ubuntu', Helvetica, Arial, sans-serif;
+    color: rgb(112,112,112);
+}
+
+.nav-item:hover {
+    background-image: linear-gradient(to bottom,#aaa 0,#f8f8f8 100%);
+}
+
+#logo-cell {
+    padding-top: 0px;
+    padding-bottom: 0px;
+    height: 100%;
+}
+
+#logo-div {
+    padding-top: 0px;
+    padding-bottom: 0px;
+    height: 100%;
+    margin-bottom: 0px;
+}
+
+.headingsmall {
+    font-family: 'Ubuntu', Helvetica, Arial, sans-serif;
+    font-size: 18px;
+    color: rgb(175,175,175);
+    text-align: center;
+}

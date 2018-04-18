@@ -1,0 +1,29 @@
+# Example run:
+# -----------------------------------------------------------------------------------------------------------------------
+# $ echo 'hello' > test.vfstring
+# $ echo ' world' > test2.vfstring
+#
+# $ make -f MakefileVFSTRING
+# gcc -c concatStrings.c -o concatStrings.o
+# gcc concatStrings.o -o concatStrings
+#
+# $ make -f MakefileVFSTRING run IN_VFSTRING_1="test.vfstring" IN_VFSTRING_2="test2.vfstring" OUT_VFSTRING="out.vfstring"
+# ./concatStrings -i1 test.vfstring -i2 test2.vfstring -o2 out.vfstring
+# -----------------------------------------------------------------------------------------------------------------------
+
+PROGRAM_NAME = concatStrings
+
+default: $(PROGRAM_NAME)
+
+$(PROGRAM_NAME).o: $(PROGRAM_NAME).c module.h
+	    gcc -c $(PROGRAM_NAME).c -o $(PROGRAM_NAME).o
+
+$(PROGRAM_NAME): $(PROGRAM_NAME).o
+	    gcc $(PROGRAM_NAME).o -o $(PROGRAM_NAME)
+
+clean:
+	-rm -f $(PROGRAM_NAME).o
+	-rm -f $(PROGRAM_NAME)
+
+run: $(PROGRAM_NAME)
+	./$(PROGRAM_NAME) -i1 $(IN_VFSTRING_1) -i2 $(IN_VFSTRING_2) -o2 $(OUT_VFSTRING)

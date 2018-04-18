@@ -1,0 +1,41 @@
+{
+    "db" : {
+        "hostname": "localhost",
+        "username" : "vividuser",
+        "password" : "R3dsqu4r3",
+        "dbname" : "vivid"
+    },
+    "modules": {
+        "path_rel_code" : "data/modules/code/",
+        "path_rel_executables" : "data/modules/compiled/",
+        "path_abs_code": "DYNAMIC",
+        "path_abs_executables": "DYNAMIC",
+        "code_file_extension" : ".cpp",
+        "compiler": "g++",
+        "language-standard": "gnu++03",
+        "additional-compiler-flags":"-I/usr/local/include/opencv -I/usr/local/include -L/usr/local/lib -lopencv_shape -lopencv_stitching -lopencv_objdetect -lopencv_superres -lopencv_videostab -lopencv_calib3d -lopencv_features2d -lopencv_highgui -lopencv_videoio -lopencv_imgcodecs -lopencv_video -lopencv_photo -lopencv_ml -lopencv_imgproc -lopencv_flann -lopencv_core",
+        "path_rel_vividflow_lib_dir": "vividflowlib",
+        "path_abs_vividflow_lib_dir": "DYNAMIC",
+	"vividflow_lib_header": "vividflow.h",
+	"vividflow_lib_template_source": "module_template.cpp"
+    },
+    "job_scheduler": {
+        "check_frequency": 5,
+        "max_concurrent_jobs": 1
+    },
+    "jobs" : {
+        "output_log_filename": "log.txt",
+        "path_rel_working": "data/workingfolders",
+        "path_rel_output": "data/joboutputs",
+        "path_abs_output": "DYNAMIC",
+        "path_abs_working": "DYNAMIC"
+    },
+    "resources" : {
+        "path_rel": "data/resources",
+        "path_abs": "DYNAMIC"
+    },
+    "system" : {
+        "path_abs_root": "DYNAMIC",
+        "path_abs_static": "DYNAMIC"
+    }
+}

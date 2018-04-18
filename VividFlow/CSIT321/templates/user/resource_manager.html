@@ -1,0 +1,194 @@
+{% extends "_base.html" %}
+
+{% block js %}
+<script src="/static/js/Constants.js" charset="utf-8"></script>
+<script src="/static/js/ResourceForm.js" charset="utf-8"></script>
+<script type="text/javascript">
+    var g_resource_form = null;
+    $(document).ready(function(){
+        g_resource_form = new ResourceForm($("#resources"));
+        g_url = {};
+        g_url.resource_add = "{{ url_for('resource_add') }}";
+    });
+
+    function submit() {
+        var file = $('#file')[0].files[0];
+        console.log(file);
+        var resource_name = $("#resource_name").val();
+        var form_data = new FormData();
+        form_data.append('file', file);
+        form_data.append('filename', file.name);
+        form_data.append('resource_name', resource_name);
+        g_resource_form.add_resource(form_data);
+    }
+
+    function rename_resource() {
+        var data = g_resource_form.get_selected();
+        // var file = $('#file')[0].files[0];
+        // console.log(file);
+        var resource_name = $("#rn_resource_name").val();
+        var form_data = new FormData();
+        //console.log(form_data);
+        //form_data.append('file', $('#file')[0]);
+        form_data.append('resource_name', resource_name);
+        form_data.append('filename', data.filename);
+        form_data.append('id', data.id);
+        form_data.append('deleted', data.deleted);
+        form_data.append('user_id', data.user_id);
+        form_data.append('file_type', data.file_type);
+        g_resource_form.add_resource(form_data);
+    }
+
+    function populate_rename_form() {
+        var data = g_resource_form.get_selected();
+        console.log("Data: " + data);
+        $("#rn_resource_name").val(data.resource_name);
+        $("#rn_filename").html(data.filename);
+        $("#rn_file_type").html(data.file_type);
+        $("#rn_id").html(data.id);
+        $("#rn_deleted").html(data.deleted);
+        $("#rn_user_id").html(data.user_id);
+    }
+
+    function open_replace() {
+        var data = g_resource_form.get_selected();
+        console.log("Data: " + data);
+        $("#rp_resource_name").val(data.resource_name);
+        $("#rp_filename").html(data.filename);
+        $("#rp_file_type").html(data.file_type);
+        $("#rp_id").html(data.id);
+        $("#rp_deleted").html(data.deleted);
+        $("#rp_user_id").html(data.user_id);
+    }
+
+    function replace_resource() {
+        var file = $('#rp_file')[0].files[0];
+        var data = g_resource_form.get_selected();
+        var form_data = new FormData();
+        form_data.append('file', file);
+        form_data.append('resource_name', data.resource_name);
+        form_data.append('filename', file.name);
+        form_data.append('id', data.id);
+        form_data.append('deleted', data.deleted);
+        form_data.append('user_id', data.user_id);
+        form_data.append('file_type', data.file_type);
+        g_resource_form.add_resource(form_data);
+    }
+
+    function delete_resource() {
+        var data = g_resource_form.get_selected();
+        data.deleted = 1;
+        var form_data = new FormData();
+        form_data.append('resource_name', data.resource_name);
+        form_data.append('filename', data.filename);
+        form_data.append('id', data.id);
+        form_data.append('deleted', data.deleted);
+        form_data.append('user_id', data.user_id);
+        form_data.append('file_type', data.file_type);
+        g_resource_form.add_resource(form_data);
+    }
+
+    function download_selected() {
+        var link = g_resource_form.get_download();
+        if (link != null) {
+            window.location.assign(link);
+        } else {
+            alert("Please select a resource first");
+        }
+    }
+
+</script>
+{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="/static/css/resource.css">
+{% endblock %}
+
+{% block content %}
+<h1>Resource Manager</h1>
+<hr>
+<div id="resources"></div>
+
+<div style="clear: left; padding:20px;">
+    <button class="btn btn-default" onclick="" data-toggle="modal" data-target="#modal_add">Upload</button>
+    <button class="btn btn-default" onclick="populate_rename_form()" data-toggle="modal" data-target="#modal_rename" >Rename</button>
+    <button class="btn btn-default" onclick="delete_resource()">Delete</button>
+    <button class="btn btn-default" onclick="open_replace()" data-toggle="modal" data-target="#modal_replace">Replace</button>
+    <button class="btn btn-default" onclick="download_selected()">Download</button>
+</div>
+
+<!-- Add Resource -->
+<div class="modal fade" id="modal_add" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Add New Resource</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-group" enctype="multipart/form-data">
+                    <label for="resource_name">Resource Name</label>
+                    <input type="text" class="form-control" id="resource_name">
+                    <label class="control-label">File</label>
+	                <input type="file" name="file" class="filestyle" id="file" data-buttonText="Select a File">
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="submit()" data-dismiss="modal">Submit</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Rename Resource -->
+<div class="modal fade" id="modal_rename" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Rename Resource</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-group">
+                    <label for="rn_resource_name">Resource Name</label>
+                    <input type="text" class="form-control" id="rn_resource_name">
+                </form>
+                <b>id: </b><span id="rn_id"></span><br>
+                <b>user_id: </b><span id="rn_user_id"></span><br>
+                <b>Filename: </b><span id="rn_filename"></span><br>
+                <b>file_type: </b><span id="rn_file_type"></span><br>
+                <b>deleted: </b><span id="rn_deleted"></span><br>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="rename_resource()" data-dismiss="modal">Rename</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Replace Resource -->
+<div class="modal fade" id="modal_replace" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Rename Resource</h4>
+            </div>
+            <div class="modal-body">
+                <b>Resource Name: </b><span id="rp_resource_name"></span><br>
+                <b>id: </b><span id="rp_id"></span><br>
+                <b>user_id: </b><span id="rp_user_id"></span><br>
+                <b>Filename: </b><span id="rp_filename"></span><br>
+                <b>file_type: </b><span id="rp_file_type"></span><br>
+                <b>deleted: </b><span id="rp_deleted"></span><br>
+                <label class="control-label">File</label>
+                <input type="file" name="file" class="filestyle" id="rp_file" data-buttonText="Select a File">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="replace_resource()" data-dismiss="modal">Replace</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
