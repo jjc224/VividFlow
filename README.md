@@ -1,13 +1,14 @@
 # VividFlow
 
-<br /><br /><br /><br />
+<br /><br />
 
 ![alt text](https://i.imgur.com/7M5yLgh.png)
 
-<br />
-<br /><br /><br /><br />
+<br /><br /><br />
 
 ![alt text](https://github.com/jjc224/VividFlow/blob/master/Website/logos.png)
+
+<br /><br /><br /><br />
 
 ## Introduction
 VividFlow is a web application designed to allow for the rapidl prototyping of algorithms with ease for computer vision researchers by allowing them to make (and re-use) discrete modules of functionality and connect them together, defining complex algorithms which can be quickly prototyped and iterated ("Iterative design is a design methodology based on a cyclic process of prototyping, testing, analyzing, and refining a product or process." - Wikipedia).
